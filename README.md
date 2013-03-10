@@ -1,3 +1,6 @@
+Compact parameter validation using the AT.Core.Argument class
+
+
 Often times, I found myself writing parameter validation code like this:
 
         public void MyMethod(MyObject arg1)
