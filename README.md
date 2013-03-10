@@ -35,7 +35,7 @@ While this is simple enough, when someone has to do a lot of validation, it can 
 	          ...
         }
 
-To reduce this clutter and unnecessary typing, I wrote the Argument class. This class validates each parameter you pass along in a compact format. For instance, our first example above would become:
+To reduce this clutter and unnecessary typing, we can use the Argument class. This class validates each parameter you pass along in a compact format. For instance, our first example above would become:
        
        public void MyMethod(MyObject arg1)
         {
