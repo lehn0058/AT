@@ -18,7 +18,7 @@ namespace AT.Core
         /// <typeparam name="T">The result type returned by the function.</typeparam>
         /// <param name="expression">The function to evaluate.</param>
         /// <returns>The value of the evaluated function.</returns>
-        //[DebuggerHidden]
+        [DebuggerHidden]
         public static T NotNull<T>(Func<T> expression)
         {
             if (expression == null)
@@ -35,6 +35,23 @@ namespace AT.Core
             }
 
             return parameter;
+        }
+
+        /// <summary>
+        /// Validates the given expression does not return null. Raises an exception if it does.
+        /// Allows a user to pass in N number of parameters as long as they are the same type.
+        /// </summary>
+        /// <typeparam name="T">The result type returned by the function.</typeparam>
+        /// <param name="expressions">The functions to evaluate.</param>
+        [DebuggerHidden]
+        public static void NotNull<T>(params Func<T>[] expressions)
+        {
+            NotNull(() => expressions);
+
+            foreach (Func<T> expression in expressions)
+            {
+                NotNull(expression);
+            }
         }
 
         /// <summary>
@@ -277,13 +294,13 @@ namespace AT.Core
         }
 
         /// <summary>
-        /// 
+        /// Validates the given expression does not return null or an empty collection. Raises an exception if it does.
         /// </summary>
-        /// <typeparam name="T1"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <param name="expression1"></param>
-        /// <param name="expression2"></param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures"), DebuggerHidden]
+        /// <typeparam name="T1">The result type returned from function 1</typeparam>
+        /// <typeparam name="T2">The result type returned from function 2.</typeparam>
+        /// <param name="expression1">Function 1 to evaluate.</param>
+        /// <param name="expression2">Function 2 to evaluate.</param>
+        [DebuggerHidden]
         public static void NotNullOrEmpty<T1, T2>(Func<IEnumerable<T1>> expression1, Func<IEnumerable<T2>> expression2)
         {
             NotNullOrEmpty(expression1);
@@ -291,14 +308,14 @@ namespace AT.Core
         }
 
         /// <summary>
-        /// 
+        /// Validates the given expression does not return null or an empty collection. Raises an exception if it does.
         /// </summary>
-        /// <typeparam name="T1"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <param name="expression1"></param>
-        /// <param name="expression2"></param>
-        /// <param name="expression3"></param>
+        /// <typeparam name="T1">The result type returned from function 1</typeparam>
+        /// <typeparam name="T2">The result type returned from function 2.</typeparam>
+        /// <typeparam name="T3">The result type returned from function 3.</typeparam>
+        /// <param name="expression1">Function 1 to evaluate.</param>
+        /// <param name="expression2">Function 2 to evaluate.</param>
+        /// <param name="expression3">Function 3 to evaluate.</param>
         [DebuggerHidden]
         public static void NotNullOrEmpty<T1, T2, T3>(Func<IEnumerable<T1>> expression1, Func<IEnumerable<T2>> expression2, Func<IEnumerable<T3>> expression3)
         {
@@ -307,16 +324,16 @@ namespace AT.Core
         }
 
         /// <summary>
-        /// 
+        /// Validates the given expression does not return null or an empty collection. Raises an exception if it does.
         /// </summary>
-        /// <typeparam name="T1"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <typeparam name="T4"></typeparam>
-        /// <param name="expression1"></param>
-        /// <param name="expression2"></param>
-        /// <param name="expression3"></param>
-        /// <param name="expression4"></param>
+        /// <typeparam name="T1">The result type returned from function 1</typeparam>
+        /// <typeparam name="T2">The result type returned from function 2.</typeparam>
+        /// <typeparam name="T3">The result type returned from function 3.</typeparam>
+        /// <typeparam name="T4">The result type returned from function 4.</typeparam>
+        /// <param name="expression1">Function 1 to evaluate.</param>
+        /// <param name="expression2">Function 2 to evaluate.</param>
+        /// <param name="expression3">Function 3 to evaluate.</param>
+        /// <param name="expression4">Function 4 to evaluate.</param>
         [DebuggerHidden]
         public static void NotNullOrEmpty<T1, T2, T3, T4>(Func<IEnumerable<T1>> expression1, Func<IEnumerable<T2>> expression2, Func<IEnumerable<T3>> expression3, Func<IEnumerable<T4>> expression4)
         {
@@ -325,18 +342,18 @@ namespace AT.Core
         }
 
         /// <summary>
-        /// 
+        /// Validates the given expression does not return null or an empty collection. Raises an exception if it does.
         /// </summary>
-        /// <typeparam name="T1"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <typeparam name="T4"></typeparam>
-        /// <typeparam name="T5"></typeparam>
-        /// <param name="expression1"></param>
-        /// <param name="expression2"></param>
-        /// <param name="expression3"></param>
-        /// <param name="expression4"></param>
-        /// <param name="expression5"></param>
+        /// <typeparam name="T1">The result type returned from function 1</typeparam>
+        /// <typeparam name="T2">The result type returned from function 2.</typeparam>
+        /// <typeparam name="T3">The result type returned from function 3.</typeparam>
+        /// <typeparam name="T4">The result type returned from function 4.</typeparam>
+        /// <typeparam name="T5">The result type returned from function 5.</typeparam>
+        /// <param name="expression1">Function 1 to evaluate.</param>
+        /// <param name="expression2">Function 2 to evaluate.</param>
+        /// <param name="expression3">Function 3 to evaluate.</param>
+        /// <param name="expression4">Function 4 to evaluate.</param>
+        /// <param name="expression5">Function 5 to evaluate.</param>
         [DebuggerHidden]
         public static void NotNullOrEmpty<T1, T2, T3, T4, T5>(Func<IEnumerable<T1>> expression1, Func<IEnumerable<T2>> expression2, Func<IEnumerable<T3>> expression3, Func<IEnumerable<T4>> expression4, Func<IEnumerable<T5>> expression5)
         {
@@ -345,20 +362,20 @@ namespace AT.Core
         }
 
         /// <summary>
-        /// 
+        /// Validates the given expression does not return null or an empty collection. Raises an exception if it does.
         /// </summary>
-        /// <typeparam name="T1"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <typeparam name="T4"></typeparam>
-        /// <typeparam name="T5"></typeparam>
-        /// <typeparam name="T6"></typeparam>
-        /// <param name="expression1"></param>
-        /// <param name="expression2"></param>
-        /// <param name="expression3"></param>
-        /// <param name="expression4"></param>
-        /// <param name="expression5"></param>
-        /// <param name="expression6"></param>
+        /// <typeparam name="T1">The result type returned from function 1</typeparam>
+        /// <typeparam name="T2">The result type returned from function 2.</typeparam>
+        /// <typeparam name="T3">The result type returned from function 3.</typeparam>
+        /// <typeparam name="T4">The result type returned from function 4.</typeparam>
+        /// <typeparam name="T5">The result type returned from function 5.</typeparam>
+        /// <typeparam name="T6">The result type returned from function 6.</typeparam>
+        /// <param name="expression1">Function 1 to evaluate.</param>
+        /// <param name="expression2">Function 2 to evaluate.</param>
+        /// <param name="expression3">Function 3 to evaluate.</param>
+        /// <param name="expression4">Function 4 to evaluate.</param>
+        /// <param name="expression5">Function 5 to evaluate.</param>
+        /// <param name="expression6">Function 6 to evaluate.</param>
         [DebuggerHidden]
         public static void NotNullOrEmpty<T1, T2, T3, T4, T5, T6>(Func<IEnumerable<T1>> expression1, Func<IEnumerable<T2>> expression2, Func<IEnumerable<T3>> expression3, Func<IEnumerable<T4>> expression4, Func<IEnumerable<T5>> expression5, Func<IEnumerable<T6>> expression6)
         {
@@ -367,22 +384,22 @@ namespace AT.Core
         }
 
         /// <summary>
-        /// 
+        /// Validates the given expression does not return null or an empty collection. Raises an exception if it does.
         /// </summary>
-        /// <typeparam name="T1"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <typeparam name="T4"></typeparam>
-        /// <typeparam name="T5"></typeparam>
-        /// <typeparam name="T6"></typeparam>
-        /// <typeparam name="T7"></typeparam>
-        /// <param name="expression1"></param>
-        /// <param name="expression2"></param>
-        /// <param name="expression3"></param>
-        /// <param name="expression4"></param>
-        /// <param name="expression5"></param>
-        /// <param name="expression6"></param>
-        /// <param name="expression7"></param>
+        /// <typeparam name="T1">The result type returned from function 1</typeparam>
+        /// <typeparam name="T2">The result type returned from function 2.</typeparam>
+        /// <typeparam name="T3">The result type returned from function 3.</typeparam>
+        /// <typeparam name="T4">The result type returned from function 4.</typeparam>
+        /// <typeparam name="T5">The result type returned from function 5.</typeparam>
+        /// <typeparam name="T6">The result type returned from function 6.</typeparam>
+        /// <typeparam name="T7">The result type returned from function 7.</typeparam>
+        /// <param name="expression1">Function 1 to evaluate.</param>
+        /// <param name="expression2">Function 2 to evaluate.</param>
+        /// <param name="expression3">Function 3 to evaluate.</param>
+        /// <param name="expression4">Function 4 to evaluate.</param>
+        /// <param name="expression5">Function 5 to evaluate.</param>
+        /// <param name="expression6">Function 6 to evaluate.</param>
+        /// <param name="expression7">Function 7 to evaluate.</param>
         [DebuggerHidden]
         public static void NotNullOrEmpty<T1, T2, T3, T4, T5, T6, T7>(Func<IEnumerable<T1>> expression1, Func<IEnumerable<T2>> expression2, Func<IEnumerable<T3>> expression3, Func<IEnumerable<T4>> expression4, Func<IEnumerable<T5>> expression5, Func<IEnumerable<T6>> expression6, Func<IEnumerable<T7>> expression7)
         {
@@ -391,24 +408,24 @@ namespace AT.Core
         }
 
         /// <summary>
-        /// 
+        /// Validates the given expression does not return null or an empty collection. Raises an exception if it does.
         /// </summary>
-        /// <typeparam name="T1"></typeparam>
-        /// <typeparam name="T2"></typeparam>
-        /// <typeparam name="T3"></typeparam>
-        /// <typeparam name="T4"></typeparam>
-        /// <typeparam name="T5"></typeparam>
-        /// <typeparam name="T6"></typeparam>
-        /// <typeparam name="T7"></typeparam>
-        /// <typeparam name="T8"></typeparam>
-        /// <param name="expression1"></param>
-        /// <param name="expression2"></param>
-        /// <param name="expression3"></param>
-        /// <param name="expression4"></param>
-        /// <param name="expression5"></param>
-        /// <param name="expression6"></param>
-        /// <param name="expression7"></param>
-        /// <param name="expression8"></param>
+        /// <typeparam name="T1">The result type returned from function 1</typeparam>
+        /// <typeparam name="T2">The result type returned from function 2.</typeparam>
+        /// <typeparam name="T3">The result type returned from function 3.</typeparam>
+        /// <typeparam name="T4">The result type returned from function 4.</typeparam>
+        /// <typeparam name="T5">The result type returned from function 5.</typeparam>
+        /// <typeparam name="T6">The result type returned from function 6.</typeparam>
+        /// <typeparam name="T7">The result type returned from function 7.</typeparam>
+        /// <typeparam name="T8">The result type returned from function 8.</typeparam>
+        /// <param name="expression1">Function 1 to evaluate.</param>
+        /// <param name="expression2">Function 2 to evaluate.</param>
+        /// <param name="expression3">Function 3 to evaluate.</param>
+        /// <param name="expression4">Function 4 to evaluate.</param>
+        /// <param name="expression5">Function 5 to evaluate.</param>
+        /// <param name="expression6">Function 6 to evaluate.</param>
+        /// <param name="expression7">Function 7 to evaluate.</param>
+        /// <param name="expression8">Function 8 to evaluate.</param>
         [DebuggerHidden]
         public static void NotNullOrEmpty<T1, T2, T3, T4, T5, T6, T7, T8>(Func<IEnumerable<T1>> expression1, Func<IEnumerable<T2>> expression2, Func<IEnumerable<T3>> expression3, Func<IEnumerable<T4>> expression4, Func<IEnumerable<T5>> expression5, Func<IEnumerable<T6>> expression6, Func<IEnumerable<T7>> expression7, Func<IEnumerable<T8>> expression8)
         {
