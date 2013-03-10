@@ -1,0 +1,13 @@
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+*.suo
+AT.Core/bin/
+AT.Core/obj/
+TestResults/
+UnitTests/AT.Core.UnitTests/bin/
+UnitTests/AT.Core.UnitTests/obj/
