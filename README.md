@@ -1,5 +1,5 @@
-Compact parameter validation using the AT.Core.Argument class
-
+Compact parameter validation using AT.Core.Argument
+===================================================
 
 Often times, I found myself writing parameter validation code like this:
 
