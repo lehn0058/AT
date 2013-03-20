@@ -108,13 +108,13 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AT.Data\AT.Data.csproj">
+    <ProjectReference Include="..\..\AT.Data\AT.Data.csproj">
       <Project>{4c4ed7de-c3c3-450d-8700-fc226f3142af}</Project>
       <Name>AT.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DatabaseSetup.sql" />
+    <Content Include="TestModel.edmx.sql" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

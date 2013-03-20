@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AT.Core.UnitTests", "UnitTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AT.Data", "AT.Data\AT.Data.csproj", "{4C4ED7DE-C3C3-450D-8700-FC226F3142AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AT.Data.UnitTests", "AT.Data.UnitTests\AT.Data.UnitTests.csproj", "{1710D07D-1BB3-410B-9E5E-60F2AAC199C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AT.Data.UnitTests", "UnitTests\AT.Data.UnitTests\AT.Data.UnitTests.csproj", "{1710D07D-1BB3-410B-9E5E-60F2AAC199C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
