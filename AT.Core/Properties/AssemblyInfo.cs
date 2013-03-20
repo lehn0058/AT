@@ -24,8 +24,8 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("cfe69840-f8d9-4948-9b5d-b93d1380bb54")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.1")]
+[assembly: AssemblyFileVersion("1.0.1")]
 
 [assembly: SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Scope = "member", Target = "AT.Core.Argument.#NotNullOrEmpty`4(System.Func`1<System.Collections.Generic.IEnumerable`1<!!0>>,System.Func`1<System.Collections.Generic.IEnumerable`1<!!1>>,System.Func`1<System.Collections.Generic.IEnumerable`1<!!2>>,System.Func`1<System.Collections.Generic.IEnumerable`1<!!3>>)")]
 [assembly: SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures", Scope = "member", Target = "AT.Core.Argument.#NotNullOrEmpty`5(System.Func`1<System.Collections.Generic.IEnumerable`1<!!0>>,System.Func`1<System.Collections.Generic.IEnumerable`1<!!1>>,System.Func`1<System.Collections.Generic.IEnumerable`1<!!2>>,System.Func`1<System.Collections.Generic.IEnumerable`1<!!3>>,System.Func`1<System.Collections.Generic.IEnumerable`1<!!4>>)")]

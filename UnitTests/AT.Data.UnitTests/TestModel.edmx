@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="apptechiesModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="apptechiesModelStoreContainer">
+    <EntitySet Name="Cars" EntityType="apptechiesModel.Store.Cars" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="People" EntityType="apptechiesModel.Store.People" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FK_Car_Person" Association="apptechiesModel.Store.FK_Car_Person">
+      <End Role="Person" EntitySet="People" />
+      <End Role="Car" EntitySet="Cars" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Cars">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Model" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="Year" Type="datetime" Nullable="false" />
+    <Property Name="MilesPerGallon" Type="int" Nullable="false" />
+    <Property Name="HorsePower" Type="int" Nullable="true" />
+    <Property Name="PersonId" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="People">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="FirstName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="LastName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="MiddleName" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="Age" Type="smallint" Nullable="false" />
+    <Property Name="Height" Type="decimal" Nullable="true" Precision="18" Scale="0" />
+    <Property Name="IQ" Type="int" Nullable="true" />
+    <Property Name="Birthday" Type="datetime" Nullable="false" />
+    <Property Name="FavoriteNumber" Type="bigint" Nullable="true" />
+    <Property Name="IsMarried" Type="bit" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_Car_Person">
+    <End Role="Person" Type="apptechiesModel.Store.People" Multiplicity="0..1" />
+    <End Role="Car" Type="apptechiesModel.Store.Cars" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Person">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Car">
+        <PropertyRef Name="PersonId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="apptechiesModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="TestModelEntities" p1:LazyLoadingEnabled="true" >
+          <EntitySet Name="Cars" EntityType="apptechiesModel.Car" />
+          <EntitySet Name="People" EntityType="apptechiesModel.Person" />
+          <AssociationSet Name="FK_Car_Person" Association="apptechiesModel.FK_Car_Person">
+            <End Role="Person" EntitySet="People" />
+            <End Role="Car" EntitySet="Cars" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Car">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="Model" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="DateTime" Name="Year" Nullable="false" Precision="0" />
+          <Property Type="Int32" Name="MilesPerGallon" Nullable="false" />
+          <Property Type="Int32" Name="HorsePower" />
+          <Property Type="Int32" Name="PersonId" />
+          <NavigationProperty Name="Person" Relationship="apptechiesModel.FK_Car_Person" FromRole="Car" ToRole="Person" />
+        </EntityType>
+        <EntityType Name="Person">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="String" Name="FirstName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="LastName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="MiddleName" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Int16" Name="Age" Nullable="false" />
+          <Property Type="Decimal" Name="Height" Precision="18" Scale="0" />
+          <Property Type="Int32" Name="IQ" />
+          <Property Type="DateTime" Name="Birthday" Nullable="false" Precision="7" />
+          <Property Type="Int64" Name="FavoriteNumber" />
+          <Property Type="Boolean" Name="IsMarried" Nullable="false" />
+          <NavigationProperty Name="Cars" Relationship="apptechiesModel.FK_Car_Person" FromRole="Person" ToRole="Car" />
+        </EntityType>
+        <Association Name="FK_Car_Person">
+          <End Type="apptechiesModel.Person" Role="Person" Multiplicity="0..1" />
+          <End Type="apptechiesModel.Car" Role="Car" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Car">
+              <PropertyRef Name="PersonId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="apptechiesModelStoreContainer" CdmEntityContainer="TestModelEntities">
+    <EntitySetMapping Name="Cars">
+      <EntityTypeMapping TypeName="IsTypeOf(apptechiesModel.Car)">
+        <MappingFragment StoreEntitySet="Cars">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Model" ColumnName="Model" />
+          <ScalarProperty Name="Year" ColumnName="Year" />
+          <ScalarProperty Name="MilesPerGallon" ColumnName="MilesPerGallon" />
+          <ScalarProperty Name="HorsePower" ColumnName="HorsePower" />
+          <ScalarProperty Name="PersonId" ColumnName="PersonId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="People">
+      <EntityTypeMapping TypeName="IsTypeOf(apptechiesModel.Person)">
+        <MappingFragment StoreEntitySet="People">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+          <ScalarProperty Name="LastName" ColumnName="LastName" />
+          <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+          <ScalarProperty Name="Age" ColumnName="Age" />
+          <ScalarProperty Name="Height" ColumnName="Height" />
+          <ScalarProperty Name="IQ" ColumnName="IQ" />
+          <ScalarProperty Name="Birthday" ColumnName="Birthday" />
+          <ScalarProperty Name="FavoriteNumber" ColumnName="FavoriteNumber" />
+          <ScalarProperty Name="IsMarried" ColumnName="IsMarried" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
