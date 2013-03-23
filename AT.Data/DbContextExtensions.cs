@@ -158,8 +158,12 @@ namespace AT.Data
         /// </summary>
         /// <param name="queries">The queries to combine into a single SQL command.</param>
         /// <returns>A single, combined SQL command that returns multiple results.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification="Query is generated from compiled code and is still parameterized"),
+        System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Up to the called of this method to call dispose.")]
         public static SqlCommand BuildSqlCommand(IEnumerable<IQueryable> queries)
         {
+            Argument.NotNull(() => queries);
+
             StringBuilder bulkSQLOperation = new StringBuilder();
             int parameterIndex = 0;
             List<SqlParameter> sqlParameters = new List<SqlParameter>();
@@ -205,13 +209,13 @@ namespace AT.Data
             // Execute the parameterized SQL command which will return multiple result sets
             ObjectContext objectContext = ((IObjectContextAdapter)db).ObjectContext;
             DbConnection storeConnection = ((EntityConnection)objectContext.Connection).StoreConnection;
-            storeConnection.Open();
 
             try
             {
                 using (DbCommand command = BuildSqlCommand(queries))
                 {
                     command.Connection = storeConnection;
+                    storeConnection.Open();
 
                     using (DbDataReader reader = command.ExecuteReader())
                     {

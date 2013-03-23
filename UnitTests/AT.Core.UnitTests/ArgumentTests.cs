@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AT.Core;
+using System.Collections.Generic;
 
 namespace WhereToMeetUnitTests
 {
@@ -144,6 +145,56 @@ namespace WhereToMeetUnitTests
 
         #endregion
 
+        #region Argument.NotNullOrEmpty
+
+        [TestMethod]
+        public void Argument_NotNullOrEmpty_Valid_DoesNotThrow()
+        {
+            List<object> objectCollection = new List<object> { DateTime.Now };
+            List<string> stringCollection = new List<string> { "Testing" };
+            List<int> integerCollection = new List<int> { 1, 2, 3 };
+
+            Argument.NotNullOrEmpty(() => objectCollection, () => stringCollection, () => integerCollection);
+        }
+
+        [TestMethod]
+        public void Argument_NotNullOrEmpty_Valid_LastItemNull()
+        {
+            List<object> objectCollection = new List<object> { DateTime.Now };
+            List<string> stringCollection = new List<string> { "Testing" };
+            List<int> integerCollection = null;
+
+            try
+            {
+                Argument.NotNullOrEmpty(() => objectCollection, () => stringCollection, () => integerCollection);
+                Assert.Fail("The expected argument null exception was not thrown.");
+            }
+            catch (ArgumentNullException ex)
+            {
+                Assert.AreEqual("integerCollection", ex.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void Argument_NotNullOrEmpty_Valid_MiddleItemEmpty()
+        {
+            List<object> objectCollection = new List<object> { DateTime.Now };
+            List<string> stringCollection = new List<string>();
+            List<int> integerCollection = null;
+
+            try
+            {
+                Argument.NotNullOrEmpty(() => objectCollection, () => stringCollection, () => integerCollection);
+                Assert.Fail("The expected argument exception was not thrown.");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.AreEqual("stringCollection", ex.ParamName);
+            }
+        }
+
+        #endregion
+
         #region Argument.NotNullOrEmptyOrWhiteSpace
 
         [TestMethod]
@@ -163,7 +214,7 @@ namespace WhereToMeetUnitTests
             try
             {
                 Argument.NotNullOrEmptyOrWhiteSpace(() => string1);
-                Assert.Fail("The exprected argument null exception was not thrown.");
+                Assert.Fail("The expected argument null exception was not thrown.");
             }
             catch (ArgumentNullException ex)
             {
@@ -181,7 +232,7 @@ namespace WhereToMeetUnitTests
             try
             {
                 Argument.NotNullOrEmptyOrWhiteSpace(() => string1, () => string2, () => string3);
-                Assert.Fail("The exprected argument exception was not thrown.");
+                Assert.Fail("The expected argument exception was not thrown.");
             }
             catch (ArgumentException ex)
             {

@@ -5,8 +5,8 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="7b07c837ab2d47999b06400f409328a3" Name="Diagram1" ZoomLevel="77" >
-        <EntityTypeShape EntityType="apptechiesModel.Car" Width="1.5" PointX="2.2330085366186725" PointY="28.766473291798714" />
-        <EntityTypeShape EntityType="apptechiesModel.Person" Width="1.5" PointX="4.8846321668869965" PointY="6.4681974977572434" />
+        <EntityTypeShape EntityType="apptechiesModel.Car" Width="1.5" PointX="2.9595996192468328" PointY="18.845472180678264" />
+        <EntityTypeShape EntityType="apptechiesModel.Person" Width="1.5" PointX="8.13520058064498" PointY="13.05542719972107" />
         <AssociationConnector Association="apptechiesModel.FK_Car_Person" />
       </Diagram>
     </edmx:Diagrams>
