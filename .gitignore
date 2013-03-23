@@ -6,6 +6,9 @@
 *.ear
 *.suo
 
+*.nupkg
+*.nuspec
+
 UnitTests/AT.Data.UnitTests/App.config
 TestResults/
 

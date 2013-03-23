@@ -1,17 +1,16 @@
-﻿using System;
+﻿using AT.Core;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data.Entity;
-using System.Data.EntityClient;
-using System.Data.Objects;
 using System.Data;
 using System.Data.Common;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Data.EntityClient;
+using System.Data.Objects;
 using System.Data.SqlClient;
 using System.Globalization;
-using AT.Core;
+using System.Linq;
+using System.Text;
 
 namespace AT.Data
 {
@@ -36,13 +35,7 @@ namespace AT.Data
         {
             Argument.NotNull(() => query1, () => query2);
             List<IQueryable> queries = new List<IQueryable> { query1, query2 };
-
-            return MultipleResultSetInternal(db, queries, (objectContext, reader) =>
-            {
-                return Tuple.Create(
-                    objectContext.Read<T1>(reader),
-                    objectContext.Read<T2>(reader));
-            });
+            return MultipleResultSetInternal(db, queries, (objectContext, reader) => objectContext.Read<T1, T2>(reader));
         }
 
         /// <summary>
@@ -61,14 +54,7 @@ namespace AT.Data
         {
             Argument.NotNull(() => query1, () => query2, () => query3);
             List<IQueryable> queries = new List<IQueryable> { query1, query2, query3 };
-
-            return MultipleResultSetInternal(db, queries, (objectContext, reader) =>
-            {
-                return Tuple.Create(
-                    objectContext.Read<T1>(reader),
-                    objectContext.Read<T2>(reader),
-                    objectContext.Read<T3>(reader));
-            });
+            return MultipleResultSetInternal(db, queries, (objectContext, reader) => objectContext.Read<T1, T2, T3>(reader));
         }
 
         /// <summary>
@@ -89,15 +75,7 @@ namespace AT.Data
         {
             Argument.NotNull(() => query1, () => query2, () => query3, () => query4);
             List<IQueryable> queries = new List<IQueryable> { query1, query2, query3, query4 };
-
-            return MultipleResultSetInternal(db, queries, (objectContext, reader) =>
-            {
-                return Tuple.Create(
-                    objectContext.Read<T1>(reader),
-                    objectContext.Read<T2>(reader),
-                    objectContext.Read<T3>(reader),
-                    objectContext.Read<T4>(reader));
-            });
+            return MultipleResultSetInternal(db, queries, (objectContext, reader) => objectContext.Read<T1, T2, T3, T4>(reader));
         }
 
         /// <summary>
@@ -120,16 +98,7 @@ namespace AT.Data
         {
             Argument.NotNull(() => query1, () => query2, () => query3, () => query4, () => query5);
             List<IQueryable> queries = new List<IQueryable> { query1, query2, query3, query4, query5 };
-
-            return MultipleResultSetInternal(db, queries, (objectContext, reader) =>
-            {
-                return Tuple.Create(
-                    objectContext.Read<T1>(reader),
-                    objectContext.Read<T2>(reader),
-                    objectContext.Read<T3>(reader),
-                    objectContext.Read<T4>(reader),
-                    objectContext.Read<T5>(reader));
-            });
+            return MultipleResultSetInternal(db, queries, (objectContext, reader) => objectContext.Read<T1, T2, T3, T4, T5>(reader));
         }
 
         /// <summary>
@@ -154,17 +123,7 @@ namespace AT.Data
         {
             Argument.NotNull(() => query1, () => query2, () => query3, () => query4, () => query5, () => query6);
             List<IQueryable> queries = new List<IQueryable> { query1, query2, query3, query4, query5, query6 };
-
-            return MultipleResultSetInternal(db, queries, (objectContext, reader) =>
-            {
-                return Tuple.Create(
-                    objectContext.Read<T1>(reader),
-                    objectContext.Read<T2>(reader),
-                    objectContext.Read<T3>(reader),
-                    objectContext.Read<T4>(reader),
-                    objectContext.Read<T5>(reader),
-                    objectContext.Read<T6>(reader));
-            });
+            return MultipleResultSetInternal(db, queries, (objectContext, reader) => objectContext.Read<T1, T2, T3, T4, T5, T6>(reader));
         }
 
         /// <summary>
@@ -191,18 +150,40 @@ namespace AT.Data
         {
             Argument.NotNull(() => query1, () => query2, () => query3, () => query4, () => query5, () => query6, () => query7);
             List<IQueryable> queries = new List<IQueryable> { query1, query2, query3, query4, query5, query6, query7 };
+            return MultipleResultSetInternal(db, queries, (objectContext, reader) => objectContext.Read<T1, T2, T3, T4, T5, T6, T7>(reader));
+        }
 
-            return MultipleResultSetInternal(db, queries, (objectContext, reader) =>
+        /// <summary>
+        /// Builds a single SqlCommand from the given IQueryable queries.
+        /// </summary>
+        /// <param name="queries">The queries to combine into a single SQL command.</param>
+        /// <returns>A single, combined SQL command that returns multiple results.</returns>
+        public static SqlCommand BuildSqlCommand(IEnumerable<IQueryable> queries)
+        {
+            StringBuilder bulkSQLOperation = new StringBuilder();
+            int parameterIndex = 0;
+            List<SqlParameter> sqlParameters = new List<SqlParameter>();
+
+            // For each query that was passed in, visit each node in its expression tree.
+            // Each time we find a parameter, keep track of that parameter so we can build
+            // a collection of sql parameters to pass in with the queries.
+            ParameterExtractorExpressionVisitor visitor = new ParameterExtractorExpressionVisitor();
+            foreach (IQueryable query in queries)
             {
-                return Tuple.Create(
-                    objectContext.Read<T1>(reader),
-                    objectContext.Read<T2>(reader),
-                    objectContext.Read<T3>(reader),
-                    objectContext.Read<T4>(reader),
-                    objectContext.Read<T5>(reader),
-                    objectContext.Read<T6>(reader),
-                    objectContext.Read<T7>(reader));
-            });
+                visitor.Visit(query);
+                string queryString = QueryParameterCleanup(parameterIndex, query, visitor);
+                parameterIndex = BuildParameters(query, visitor, parameterIndex, sqlParameters);
+                bulkSQLOperation.Append(queryString);
+                bulkSQLOperation.Append(Environment.NewLine);
+                bulkSQLOperation.Append(Environment.NewLine);
+            }
+
+            SqlCommand command = new SqlCommand();
+            command.CommandText = bulkSQLOperation.ToString();
+            command.CommandType = CommandType.Text;
+            command.Parameters.AddRange(sqlParameters.ToArray());
+
+            return command;
         }
 
         /// <summary>
@@ -221,25 +202,6 @@ namespace AT.Data
             IEnumerable<IQueryable> queries,
             Func<ObjectContext, DbDataReader, T> translateFunction)
         {
-            // TODO: Update this to use string builder
-            String bulkSQLOperation = string.Empty;
-            int parameterIndex = 0;
-            List<SqlParameter> sqlParameters = new List<SqlParameter>();
-
-            // For each query that was passed in, visit each node in its expression tree.
-            // Each time we find a parameter, keep track of that parameter so we can build
-            // a collection of sql parameters to pass in with the queries.
-            ParameterExtractorExpressionVisitor visitor = new ParameterExtractorExpressionVisitor();
-            foreach (IQueryable query in queries)
-            {
-                visitor.Visit(query);
-                string queryString = QueryParameterCleanup(parameterIndex, query, visitor);
-                parameterIndex = BuildParameters(query, visitor, parameterIndex, sqlParameters);
-                bulkSQLOperation += queryString;
-                bulkSQLOperation += Environment.NewLine;
-                bulkSQLOperation += Environment.NewLine;
-            }
-
             // Execute the parameterized SQL command which will return multiple result sets
             ObjectContext objectContext = ((IObjectContextAdapter)db).ObjectContext;
             DbConnection storeConnection = ((EntityConnection)objectContext.Connection).StoreConnection;
@@ -247,11 +209,9 @@ namespace AT.Data
 
             try
             {
-                using (DbCommand command = storeConnection.CreateCommand())
+                using (DbCommand command = BuildSqlCommand(queries))
                 {
-                    command.CommandText = bulkSQLOperation;
-                    command.CommandType = CommandType.Text;
-                    command.Parameters.AddRange(sqlParameters.ToArray());
+                    command.Connection = storeConnection;
 
                     using (DbDataReader reader = command.ExecuteReader())
                     {

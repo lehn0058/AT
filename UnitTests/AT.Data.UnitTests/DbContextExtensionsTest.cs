@@ -66,7 +66,7 @@ namespace AT.Data.UnitTests
                                where c.HorsePower > horsePower
                                select c;
 
-                Tuple<IEnumerable<Person>, IEnumerable<Car>> results = context.MultipleResultSet<Person, Car>(peopleQuery, carQuery);
+                Tuple<IEnumerable<Person>, IEnumerable<Car>> results = context.MultipleResultSet(peopleQuery, carQuery);
 
                 Assert.AreEqual(3, results.Item1.Count());
                 Assert.IsNotNull(results.Item1.SingleOrDefault(s => s.FirstName.Equals("Tony")));
