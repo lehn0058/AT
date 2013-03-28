@@ -247,6 +247,60 @@ namespace AT.Core
 
         #endregion
 
+        #region NotNullIsBetween
+
+        /// <summary>
+        /// Validates that the given expression is not null and falls between the given lower and upper bounds.
+        /// This comparison is inclusive.
+        /// </summary>
+        /// <typeparam name="T">The type to be compared.</typeparam>
+        /// <param name="lowerBound">The lower bound used in the range check</param>
+        /// <param name="upperBound">The upper bound used in the range check.</param>
+        /// <param name="expression">The function to evaluate</param>
+        /// <returns>The value of the evaulated function.</returns>
+        [DebuggerHidden]
+        public static T NotNullIsBetween<T>(T lowerBound, T upperBound, Func<T> expression)
+        {
+            Argument.NotNull(() => lowerBound, () => upperBound);
+
+            T parameter = Argument.NotNull(expression);
+
+            // If our value if not larger than the lower bound, then we are out of range
+            if (!(Comparer<T>.Default.Compare(parameter, lowerBound) >= 0))
+            {
+                throw new ArgumentOutOfRangeException(RetrievePreviousParameterName(expression), "the parameter was less that the desired range");
+            }
+
+            // If our value if not smaller than the upper bound, then we are out of range
+            if (!(Comparer<T>.Default.Compare(parameter, upperBound) <= 0))
+            {
+                throw new ArgumentOutOfRangeException(RetrievePreviousParameterName(expression), "the parameter was larger that the desired range");
+            }
+
+            return parameter;
+        }
+
+        /// <summary>
+        /// Validates that the given expressions are not null and falls between the given lower and upper bounds.
+        /// This comparison is inclusive.
+        /// </summary>
+        /// <typeparam name="T">The type to be compared.</typeparam>
+        /// <param name="lowerBound">The lower bound used in the range check</param>
+        /// <param name="upperBound">The upper bound used in the range check.</param>
+        /// <param name="expressions">The functions to evaluate</param>
+        [DebuggerHidden]
+        public static void NotNullIsBetween<T>(T lowerBound, T upperBound, params Func<T>[] expressions)
+        {
+            NotNull(() => expressions);
+
+            foreach (Func<T> expression in expressions)
+            {
+                NotNullIsBetween(lowerBound, upperBound, expression);
+            }
+        }
+
+        #endregion
+
         #region Private Methods
 
         /// <summary>

@@ -6,12 +6,43 @@ using System.Data.Entity;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data.Objects;
+using AT.Data;
 
 namespace AT.Data.UnitTests
 {
     [TestClass]
     public class DbContextExtensionsTest
     {
+        [TestMethod]
+        public void DbContextExtensions_MultipleResultSetQuery_NResults_Test()
+        {
+            using (TestModelEntities context = new TestModelEntities())
+            {
+                int age = 17;
+                int horsePower = 140;
+
+                MultipleResultQuery<Person> peopleQuery = (from p in context.People
+                                                       where p.Age > age
+                                                       select p).AsMultipleResultQuery();
+
+                MultipleResultQuery<Car> carQuery = (from c in context.Cars
+                                                where c.HorsePower > horsePower
+                                                select c).AsMultipleResultQuery();
+
+                context.MultipleResultSet(peopleQuery, carQuery);
+
+                Assert.AreEqual(3, peopleQuery.Results.Count());
+                Assert.IsNotNull(peopleQuery.Results.SingleOrDefault(s => s.FirstName.Equals("Tony")));
+                Assert.IsNotNull(peopleQuery.Results.SingleOrDefault(s => s.FirstName.Equals("John")));
+                Assert.IsNotNull(peopleQuery.Results.SingleOrDefault(s => s.FirstName.Equals("Jane")));
+
+                Assert.AreEqual(2, carQuery.Results.Count());
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Camry")));
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Corolla")));
+            }
+        }
+
+
         #region Init
 
         [ClassInitialize()]

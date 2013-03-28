@@ -241,5 +241,103 @@ namespace WhereToMeetUnitTests
         }
 
         #endregion
+
+        #region Argument.NotNullIsBetween
+
+        [TestMethod]
+        public void Argument_NotNullIsBetween_Valid()
+        {
+            int negativeTen = -10;
+            int positiveTen = 10;
+            int five = 5;
+
+            int result = Argument.NotNullIsBetween(negativeTen, positiveTen, () => five);
+            Assert.AreEqual(five, result);
+        }
+
+        [TestMethod]
+        public void Argument_NotNullIsBetween_OutOfBounds_Lower()
+        {
+            int negativeTen = -10;
+            int positiveTen = 10;
+            int negativeTwenty = -20;
+
+            try
+            {
+                int result = Argument.NotNullIsBetween(negativeTen, positiveTen, () => negativeTwenty);
+                Assert.Fail("The expected ArgumentOutOfRangeExeception was not thrown.");
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Assert.AreEqual("negativeTwenty", ex.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void Argument_NotNullIsBetween_OutOfBounds_Upper()
+        {
+            int negativeTen = -10;
+            int positiveTen = 10;
+            int positiveTwenty = 20;
+
+            try
+            {
+                int result = Argument.NotNullIsBetween(negativeTen, positiveTen, () => positiveTwenty);
+                Assert.Fail("The expected ArgumentOutOfRangeExeception was not thrown.");
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Assert.AreEqual("positiveTwenty", ex.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void Argument_NotNullIsBetween_InBoundsInclusive_Lower()
+        {
+            int negativeTen = -10;
+            int positiveTen = 10;
+
+            int result = Argument.NotNullIsBetween(negativeTen, positiveTen, () => negativeTen);
+            Assert.AreEqual(negativeTen, result);
+        }
+
+        [TestMethod]
+        public void Argument_NotNullIsBetween_InBoundsInclusive_Upper()
+        {
+            int negativeTen = -10;
+            int positiveTen = 10;
+
+            int result = Argument.NotNullIsBetween(negativeTen, positiveTen, () => positiveTen);
+            Assert.AreEqual(positiveTen, result);
+        }
+
+        [TestMethod]
+        public void Argument_NotNullIsBetween_MultipleItems_Valid()
+        {
+            int negativeTen = -10;
+            int positiveTen = 10;
+
+            Argument.NotNullIsBetween(negativeTen, positiveTen, () => 1, () => -10, () => 0);
+        }
+
+        [TestMethod]
+        public void Argument_NotNullIsBetween_MultipleItems_NotValid()
+        {
+            int negativeTen = -10;
+            int positiveTen = 10;
+            int invalid = -100;
+
+            try
+            {
+                Argument.NotNullIsBetween(negativeTen, positiveTen, () => 1, () => 10, () => -3, () => invalid);
+                Assert.Fail("The expected ArgumentOutOfRangeException was not thrown.");
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Assert.AreEqual("invalid", ex.ParamName);
+            }
+        }
+
+        #endregion
     }
 }

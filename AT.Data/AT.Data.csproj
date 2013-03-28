@@ -60,6 +60,8 @@
   <ItemGroup>
     <Compile Include="DbContextExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="IQueryableExtensions.cs" />
+    <Compile Include="MultipleResult.cs" />
     <Compile Include="ObjectContextExtensions.cs" />
     <Compile Include="ParameterExtractorExpressionVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
