@@ -44,13 +44,13 @@ namespace AT.Core
         /// </summary>
         /// <param name="expressions">The functions to evaluate.</param>
         [DebuggerHidden]
-        public static void NotNull<T>(params Func<T>[] expressions)
+        public static void NotNull(params Func<object>[] expressions)
         {
             NotNull(() => expressions);
-            
-            foreach (Func<T> expression in expressions)
+
+            foreach (Func<object> expression in expressions)
             {
-                NotNull(expression);
+                NotNull<object>(expression);
             }
         }
 

@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AT.Data</RootNamespace>
     <AssemblyName>AT.Data</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,12 +45,13 @@
     <AssemblyOriginatorKeyFile>../../AT-SNK.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AT.Core, Version=1.0.1.0, Culture=neutral, PublicKeyToken=f73a9c5fba987e93, processorArchitecture=MSIL">
+    <Reference Include="AT.Core, Version=1.1.0.0, Culture=neutral, PublicKeyToken=f73a9c5fba987e93, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AT.Core.1.0.1\AT.Core.dll</HintPath>
+      <HintPath>..\packages\AT.Core.1.1.0.1\lib\net40\AT.Core.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    <Reference Include="EntityFramework, Version=4.4.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net40\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
@@ -61,7 +63,7 @@
     <Compile Include="DbContextExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IQueryableExtensions.cs" />
-    <Compile Include="MultipleResult.cs" />
+    <Compile Include="MultipleResultQuery.cs" />
     <Compile Include="ObjectContextExtensions.cs" />
     <Compile Include="ParameterExtractorExpressionVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
