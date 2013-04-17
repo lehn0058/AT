@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AT.Core;
 using System.Collections.Generic;
 
-namespace WhereToMeetUnitTests
+namespace AT.Core.UnitTests
 {
     [TestClass]
     public class ArgumentTests

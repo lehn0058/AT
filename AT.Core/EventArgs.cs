@@ -6,15 +6,15 @@ using System.Text;
 namespace AT.Core
 {
     /// <summary>
-    /// Generic event args
+    /// Allows you to generically send any object type as a value following the EventArgs pattern.
     /// </summary>
-    /// <typeparam name="T">The type to be bubbled up through the event.</typeparam>
+    /// <typeparam name="T">The type to be wrapped.</typeparam>
     public class EventArgs<T> : EventArgs
     {
         private T _value;
 
         /// <summary>
-        /// Creates a new EventArgs that contains type T.
+        /// Creates a new EventArgs that wraps a value of type T.
         /// </summary>
         /// <param name="value">The value to pass along in the event args.</param>
         public EventArgs(T value)

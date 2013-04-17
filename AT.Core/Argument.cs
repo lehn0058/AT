@@ -47,11 +47,7 @@ namespace AT.Core
         public static void NotNull(params Func<object>[] expressions)
         {
             NotNull(() => expressions);
-
-            foreach (Func<object> expression in expressions)
-            {
-                NotNull<object>(expression);
-            }
+            expressions.ForEach(expression => NotNull<object>(expression));
         }
 
         #endregion
@@ -87,11 +83,7 @@ namespace AT.Core
         public static void NotNullOrEmpty(params Func<String>[] expressions)
         {
             NotNull(() => expressions);
-
-            foreach (Func<String> expression in expressions)
-            {
-                NotNullOrEmpty(expression);    
-            }
+            expressions.ForEach(expression => NotNullOrEmpty(expression));
         }
 
         #endregion
@@ -124,11 +116,7 @@ namespace AT.Core
         public static void NotNullOrEmpty(params Func<Guid>[] expressions)
         {
             NotNull(() => expressions);
-
-            foreach (Func<Guid> expression in expressions)
-            {
-                NotNullOrEmpty(expression);
-            }
+            expressions.ForEach(expression => NotNullOrEmpty(expression));
         }
 
         #endregion
@@ -162,11 +150,7 @@ namespace AT.Core
         public static void NotNullOrEmpty(params Func<IEnumerable>[] expressions)
         {
             Argument.NotNull(() => expressions);
-
-            foreach (var expression in expressions)
-            {
-                Argument.NotNullOrEmpty(expression);
-            }
+            expressions.ForEach(expression => Argument.NotNullOrEmpty(expression));
         }
 
         #endregion
@@ -201,11 +185,7 @@ namespace AT.Core
         public static void NotNullOrWhiteSpace(params Func<String>[] expressions)
         {
             NotNull(() => expressions);
-
-            foreach (Func<String> expression in expressions)
-            {
-                NotNullOrWhiteSpace(expression);
-            }
+            expressions.ForEach(expression => NotNullOrWhiteSpace(expression));
         }
 
         #endregion
@@ -238,11 +218,7 @@ namespace AT.Core
         public static void NotNullOrEmptyOrWhiteSpace(params Func<String>[] expressions)
         {
             NotNull(() => expressions);
-
-            foreach (Func<String> expression in expressions)
-            {
-                NotNullOrEmptyOrWhiteSpace(expression);
-            }
+            expressions.ForEach(expression => NotNullOrEmptyOrWhiteSpace(expression));
         }
 
         #endregion
@@ -292,11 +268,7 @@ namespace AT.Core
         public static void NotNullIsBetween<T>(T lowerBound, T upperBound, params Func<T>[] expressions)
         {
             NotNull(() => expressions);
-
-            foreach (Func<T> expression in expressions)
-            {
-                NotNullIsBetween(lowerBound, upperBound, expression);
-            }
+            expressions.ForEach(expression => NotNullIsBetween(lowerBound, upperBound, expression));
         }
 
         #endregion
