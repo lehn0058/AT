@@ -8,14 +8,14 @@ namespace AT.Core.UnitTests
     [TestClass]
     public class IEnumerableExtensionsTest
     {
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void IEnumerableExtensions_ForEach_NullAction()
-        {
-            IEnumerable<int> collection = new List<int>();
-            Action<int> action = null;
-            collection.ForEach(action);
-        }
+        //[TestMethod]
+        //[ExpectedException(typeof(ArgumentNullException))]
+        //public void IEnumerableExtensions_ForEach_NullAction()
+        //{
+        //    IEnumerable<int> collection = new List<int>();
+        //    Action<int> action = null;
+        //    collection.ForEach(action);
+        //}
 
         [TestMethod]
         public void IEnumerableExtensions_ForEach_EmptyCollection()

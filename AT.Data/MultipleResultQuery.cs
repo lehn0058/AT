@@ -14,7 +14,7 @@ namespace AT.Data
     /// <summary>
     /// Wraps an IQueryable entity for use in a multiple result query.
     /// </summary>
-    public abstract class MultipleResultQuery
+    public abstract class MultipleResultQuery : MultipleResult
     {
         private const String parameterFormat = "@p__linq__{0}";
         private IQueryable _query;
@@ -74,13 +74,6 @@ namespace AT.Data
             }
             return parameterIndex;
         }
-
-        /// <summary>
-        /// Uses the given context and reader to map sql query results to a collection of entities of type T.
-        /// </summary>
-        /// <param name="objectContext"></param>
-        /// <param name="reader"></param>
-        internal abstract void MapResults(ObjectContext objectContext, DbDataReader reader);
     }
 
     /// <summary>
@@ -106,7 +99,7 @@ namespace AT.Data
         /// </summary>
         /// <param name="objectContext"></param>
         /// <param name="reader"></param>
-        internal override void MapResults(ObjectContext objectContext, DbDataReader reader)
+        public override void MapResults(ObjectContext objectContext, DbDataReader reader)
         {
              _results = objectContext.Read<T>(reader);
         }

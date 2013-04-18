@@ -89,24 +89,24 @@ namespace AT.Data.UnitTests
                 int age = 17;
                 int horsePower = 140;
 
-                var peopleQuery = from p in context.People
-                                  where p.Age > age
-                                  select p;
+                var peopleQuery = (from p in context.People
+                                   where p.Age > age
+                                   select p).AsMultipleResultQuery();
 
-                var carQuery = from c in context.Cars
-                               where c.HorsePower > horsePower
-                               select c;
+                var carQuery = (from c in context.Cars
+                                where c.HorsePower > horsePower
+                                select c).AsMultipleResultQuery();
 
-                Tuple<IEnumerable<Person>, IEnumerable<Car>> results = context.MultipleResultSet(peopleQuery, carQuery);
+                context.MultipleResultSet(peopleQuery, carQuery);
 
-                Assert.AreEqual(3, results.Item1.Count());
-                Assert.IsNotNull(results.Item1.SingleOrDefault(s => s.FirstName.Equals("Tony")));
-                Assert.IsNotNull(results.Item1.SingleOrDefault(s => s.FirstName.Equals("John")));
-                Assert.IsNotNull(results.Item1.SingleOrDefault(s => s.FirstName.Equals("Jane")));
+                Assert.AreEqual(3, peopleQuery.Results.Count());
+                Assert.IsNotNull(peopleQuery.Results.SingleOrDefault(s => s.FirstName.Equals("Tony")));
+                Assert.IsNotNull(peopleQuery.Results.SingleOrDefault(s => s.FirstName.Equals("John")));
+                Assert.IsNotNull(peopleQuery.Results.SingleOrDefault(s => s.FirstName.Equals("Jane")));
 
-                Assert.AreEqual(2, results.Item2.Count());
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.Model.Equals("Camry")));
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.Model.Equals("Corolla")));
+                Assert.AreEqual(2, carQuery.Results.Count());
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Camry")));
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Corolla")));
             }
         }
 
@@ -118,23 +118,23 @@ namespace AT.Data.UnitTests
                 int age = 30;
                 int horsePower = 170;
 
-                var peopleQuery = from p in context.People
+                var peopleQuery = (from p in context.People
                                   join c in context.Cars on p.Id equals c.Id
                                   where p.Age > age && c.HorsePower == horsePower
-                                  select p;
+                                  select p).AsMultipleResultQuery();
 
-                var carQuery = from c in context.Cars
+                var carQuery = (from c in context.Cars
                                where c.HorsePower < horsePower
-                               select c;
+                               select c).AsMultipleResultQuery();
 
-                Tuple<IEnumerable<Person>, IEnumerable<Car>> results = context.MultipleResultSet<Person, Car>(peopleQuery, carQuery);
+                context.MultipleResultSet(peopleQuery, carQuery);
 
-                Assert.AreEqual(1, results.Item1.Count());
-                Assert.IsNotNull(results.Item1.SingleOrDefault(s => s.FirstName.Equals("John")));
+                Assert.AreEqual(1, peopleQuery.Results.Count());
+                Assert.IsNotNull(peopleQuery.Results.SingleOrDefault(s => s.FirstName.Equals("John")));
 
-                Assert.AreEqual(2, results.Item2.Count());
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.Model.Equals("Yaris")));
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.Model.Equals("Corolla")));
+                Assert.AreEqual(2, carQuery.Results.Count());
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Yaris")));
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Corolla")));
             }
         }
 
@@ -150,23 +150,23 @@ namespace AT.Data.UnitTests
                 DateTime birthday = DateTime.Today.AddYears(-16);
                 DateTime year = new DateTime(2009, 1, 1, 0, 0, 0);
 
-                var peopleQuery = from p in context.People
-                                  where p.Birthday == birthday
-                                  select p;
+                var peopleQuery = (from p in context.People
+                                   where p.Birthday == birthday
+                                   select p).AsMultipleResultQuery();
 
-                var carQuery = from c in context.Cars
-                               where c.Year == year
-                               select c;
+                var carQuery = (from c in context.Cars
+                                where c.Year == year
+                                select c).AsMultipleResultQuery();
 
-                Tuple<IEnumerable<Person>, IEnumerable<Car>> results = context.MultipleResultSet<Person, Car>(peopleQuery, carQuery);
+                context.MultipleResultSet(peopleQuery, carQuery);
 
-                Assert.AreEqual(1, results.Item1.Count());
-                Assert.IsNotNull(results.Item1.SingleOrDefault(s => s.FirstName.Equals("Peter")));
+                Assert.AreEqual(1, peopleQuery.Results.Count());
+                Assert.IsNotNull(peopleQuery.Results.SingleOrDefault(s => s.FirstName.Equals("Peter")));
 
-                Assert.AreEqual(3, results.Item2.Count());
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.Model.Equals("Camry")));
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.Model.Equals("Corolla")));
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.Model.Equals("Yaris")));
+                Assert.AreEqual(3, carQuery.Results.Count());
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Camry")));
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Corolla")));
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Yaris")));
             }
         }
 
@@ -178,23 +178,23 @@ namespace AT.Data.UnitTests
                 DateTime birthday = DateTime.Today.AddYears(-18);
                 DateTime year = new DateTime(2009, 1, 1, 0, 0, 0);
 
-                var peopleQuery = from p in context.People
-                                  where p.Birthday > birthday
-                                  select p;
+                var peopleQuery = (from p in context.People
+                                   where p.Birthday > birthday
+                                   select p).AsMultipleResultQuery();
 
-                var carQuery = from c in context.Cars
-                               where c.Year >= year
-                               select c;
+                var carQuery = (from c in context.Cars
+                                where c.Year >= year
+                                select c).AsMultipleResultQuery();
 
-                Tuple<IEnumerable<Person>, IEnumerable<Car>> results = context.MultipleResultSet<Person, Car>(peopleQuery, carQuery);
+                context.MultipleResultSet(peopleQuery, carQuery);
 
-                Assert.AreEqual(1, results.Item1.Count());
-                Assert.IsNotNull(results.Item1.SingleOrDefault(s => s.FirstName.Equals("Peter")));
+                Assert.AreEqual(1, peopleQuery.Results.Count());
+                Assert.IsNotNull(peopleQuery.Results.SingleOrDefault(s => s.FirstName.Equals("Peter")));
 
-                Assert.AreEqual(3, results.Item2.Count());
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.Model.Equals("Camry")));
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.Model.Equals("Corolla")));
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.Model.Equals("Yaris")));
+                Assert.AreEqual(3, carQuery.Results.Count());
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Camry")));
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Corolla")));
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Yaris")));
             }
         }
 
@@ -206,23 +206,23 @@ namespace AT.Data.UnitTests
                 DateTime birthday = DateTime.Today.AddYears(-18);
                 DateTime year = new DateTime(2010, 1, 1, 0, 0, 0);
 
-                var peopleQuery = from p in context.People
+                var peopleQuery = (from p in context.People
                                   where birthday < p.Birthday
-                                  select p;
+                                  select p).AsMultipleResultQuery();
 
-                var carQuery = from c in context.Cars
+                var carQuery = (from c in context.Cars
                                where c.Year < year
-                               select c;
+                               select c).AsMultipleResultQuery();
 
-                Tuple<IEnumerable<Person>, IEnumerable<Car>> results = context.MultipleResultSet<Person, Car>(peopleQuery, carQuery);
+                context.MultipleResultSet(peopleQuery, carQuery);
 
-                Assert.AreEqual(1, results.Item1.Count());
-                Assert.IsNotNull(results.Item1.SingleOrDefault(s => s.FirstName.Equals("Peter")));
+                Assert.AreEqual(1, peopleQuery.Results.Count());
+                Assert.IsNotNull(peopleQuery.Results.SingleOrDefault(s => s.FirstName.Equals("Peter")));
 
-                Assert.AreEqual(3, results.Item2.Count());
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.Model.Equals("Camry")));
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.Model.Equals("Corolla")));
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.Model.Equals("Yaris")));
+                Assert.AreEqual(3, carQuery.Results.Count());
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Camry")));
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Corolla")));
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Yaris")));
             }
         }
 
@@ -238,23 +238,23 @@ namespace AT.Data.UnitTests
                 List<short> youngAges = new List<short> { 1, 16, 30 };
                 List<short> oldAges = new List<short> { 32, 40, 60 };
 
-                var youngQuery = from p in context.People
+                var youngQuery = (from p in context.People
                                   where youngAges.Contains(p.Age)
-                                  select p;
+                                  select p).AsMultipleResultQuery();
 
-                var oldQuery = from p in context.People
+                var oldQuery = (from p in context.People
                                where oldAges.Contains(p.Age)
-                               select p;
+                               select p).AsMultipleResultQuery();
 
-                Tuple<IEnumerable<Person>, IEnumerable<Person>> results = context.MultipleResultSet<Person, Person>(youngQuery, oldQuery);
+                context.MultipleResultSet(youngQuery, oldQuery);
 
-                Assert.AreEqual(2, results.Item1.Count());
-                Assert.IsNotNull(results.Item1.SingleOrDefault(s => s.FirstName.Equals("Jane")));
-                Assert.IsNotNull(results.Item1.SingleOrDefault(s => s.FirstName.Equals("Peter")));
+                Assert.AreEqual(2, youngQuery.Results.Count());
+                Assert.IsNotNull(youngQuery.Results.SingleOrDefault(s => s.FirstName.Equals("Jane")));
+                Assert.IsNotNull(youngQuery.Results.SingleOrDefault(s => s.FirstName.Equals("Peter")));
 
-                Assert.AreEqual(2, results.Item2.Count());
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.FirstName.Equals("John")));
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.FirstName.Equals("Tony")));
+                Assert.AreEqual(2, oldQuery.Results.Count());
+                Assert.IsNotNull(oldQuery.Results.SingleOrDefault(s => s.FirstName.Equals("John")));
+                Assert.IsNotNull(oldQuery.Results.SingleOrDefault(s => s.FirstName.Equals("Tony")));
             }
         }
 
@@ -270,21 +270,21 @@ namespace AT.Data.UnitTests
                 int milesPerGallon = 35;
                 int iq = 1000;
 
-                var peopleQuery = from p in context.People
-                                  where p.IQ == iq
-                                  select p;
+                var peopleQuery = (from p in context.People
+                                   where p.IQ == iq
+                                   select p).AsMultipleResultQuery();
 
-                var carQuery = from c in context.Cars
-                               where c.MilesPerGallon == milesPerGallon
-                               select c;
+                var carQuery = (from c in context.Cars
+                                where c.MilesPerGallon == milesPerGallon
+                                select c).AsMultipleResultQuery();
 
-                Tuple<IEnumerable<Person>, IEnumerable<Car>> results = context.MultipleResultSet<Person, Car>(peopleQuery, carQuery);
+                context.MultipleResultSet(peopleQuery, carQuery);
 
-                Assert.AreEqual(1, results.Item1.Count());
-                Assert.IsNotNull(results.Item1.SingleOrDefault(s => s.FirstName.Equals("Tony")));
+                Assert.AreEqual(1, peopleQuery.Results.Count());
+                Assert.IsNotNull(peopleQuery.Results.SingleOrDefault(s => s.FirstName.Equals("Tony")));
 
-                Assert.AreEqual(1, results.Item2.Count());
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.Model.Equals("Corolla")));
+                Assert.AreEqual(1, carQuery.Results.Count());
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Corolla")));
             }
         }
 
@@ -300,21 +300,21 @@ namespace AT.Data.UnitTests
                 string personName = "Tony";
                 string carName = "Camry";
 
-                var peopleQuery = from p in context.People
+                var peopleQuery = (from p in context.People
                                   where p.FirstName.Contains(personName)
-                                  select p;
+                                  select p).AsMultipleResultQuery();
 
-                var carQuery = from c in context.Cars
+                var carQuery = (from c in context.Cars
                                where c.Model.Contains(carName)
-                               select c;
+                               select c).AsMultipleResultQuery();
 
-                Tuple<IEnumerable<Person>, IEnumerable<Car>> results = context.MultipleResultSet<Person, Car>(peopleQuery, carQuery);
+                context.MultipleResultSet(peopleQuery, carQuery);
 
-                Assert.AreEqual(1, results.Item1.Count());
-                Assert.IsNotNull(results.Item1.SingleOrDefault(s => s.FirstName.Equals("Tony")));
+                Assert.AreEqual(1, peopleQuery.Results.Count());
+                Assert.IsNotNull(peopleQuery.Results.SingleOrDefault(s => s.FirstName.Equals("Tony")));
 
-                Assert.AreEqual(1, results.Item2.Count());
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.Model.Equals("Camry")));
+                Assert.AreEqual(1, carQuery.Results.Count());
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Camry")));
             }
         }
 
@@ -326,21 +326,21 @@ namespace AT.Data.UnitTests
                 const string personName = "Tony";
                 const string carName = "Camry";
 
-                var peopleQuery = from p in context.People
+                var peopleQuery = (from p in context.People
                                   where p.FirstName.Equals(personName)
-                                  select p;
+                                  select p).AsMultipleResultQuery();
 
-                var carQuery = from c in context.Cars
+                var carQuery = (from c in context.Cars
                                where c.Model.Equals(carName)
-                               select c;
+                               select c).AsMultipleResultQuery();
 
-                Tuple<IEnumerable<Person>, IEnumerable<Car>> results = context.MultipleResultSet<Person, Car>(peopleQuery, carQuery);
+                context.MultipleResultSet(peopleQuery, carQuery);
 
-                Assert.AreEqual(1, results.Item1.Count());
-                Assert.IsNotNull(results.Item1.SingleOrDefault(s => s.FirstName.Equals("Tony")));
+                Assert.AreEqual(1, peopleQuery.Results.Count());
+                Assert.IsNotNull(peopleQuery.Results.SingleOrDefault(s => s.FirstName.Equals("Tony")));
 
-                Assert.AreEqual(1, results.Item2.Count());
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.Model.Equals("Camry")));
+                Assert.AreEqual(1, carQuery.Results.Count());
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Camry")));
             }
         }
 
@@ -353,21 +353,21 @@ namespace AT.Data.UnitTests
         {
             using (TestModelEntities context = new TestModelEntities())
             {
-                var peopleQuery = from p in context.People
+                var peopleQuery = (from p in context.People
                                   where p.Age == context.People.Max(s => s.Age)
-                                  select p;
+                                  select p).AsMultipleResultQuery();
 
-                var carQuery = from c in context.Cars
+                var carQuery = (from c in context.Cars
                                where c.HorsePower == context.Cars.Max(s => s.HorsePower)
-                               select c;
+                               select c).AsMultipleResultQuery();
 
-                Tuple<IEnumerable<Person>, IEnumerable<Car>> results = context.MultipleResultSet<Person, Car>(peopleQuery, carQuery);
+                context.MultipleResultSet(peopleQuery, carQuery);
 
-                Assert.AreEqual(1, results.Item1.Count());
-                Assert.IsNotNull(results.Item1.SingleOrDefault(s => s.FirstName.Equals("Tony")));
+                Assert.AreEqual(1, peopleQuery.Results.Count());
+                Assert.IsNotNull(peopleQuery.Results.SingleOrDefault(s => s.FirstName.Equals("Tony")));
 
-                Assert.AreEqual(1, results.Item2.Count());
-                Assert.IsNotNull(results.Item2.SingleOrDefault(s => s.Model.Equals("Camry")));
+                Assert.AreEqual(1, carQuery.Results.Count());
+                Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Camry")));
             }
         }
 
