@@ -2,7 +2,24 @@
 =============================
 Validate your parameters with minimal code using [AT.Core.Argument](https://github.com/lehn0058/AT/wiki/AT.Core.Argument)
 
-    Argument.NotNull(() => arg1);
+    // Instead of writing this:
+    if (arg1 == null)
+    {
+         throw new ArgumentNullException("arg1", "argument can not be null");
+    }
+    
+    if (arg2 == null)
+    {
+         throw new ArgumentNullException("arg2", "argument can not be null");
+    }
+    
+    if (arg3 == null)
+    {
+         throw new ArgumentNullException("arg3", "argument can not be null");
+    }
+
+    // Use this simplification instead:
+    Argument.NotNull(() => arg1, () => arg2, () => arg3);
 
 
 
