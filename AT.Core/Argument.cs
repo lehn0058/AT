@@ -11,6 +11,47 @@ namespace AT.Core
     /// </summary>
     public static class Argument
     {
+        #region Null
+
+        /// <summary>
+        /// Validates the given expression returns null. Raises an exception if it does not.
+        /// </summary>
+        /// <typeparam name="T">The result type returned by the function.</typeparam>
+        /// <param name="expression">The function to evaluate.</param>
+        /// <returns>The value of the evaluated function.</returns>
+        [DebuggerHidden]
+        public static T Null<T>(Func<T> expression)
+        {
+            if (expression == null)
+            {
+                throw new ArgumentNullException("expression", "Parameter was null. Did you pass it in as a function?");
+            }
+
+            T parameter = expression();
+
+            if (parameter != null)
+            {
+                // Throw an exception with the name of the original parameter that was passed in
+                throw new ArgumentException("parameter was not null", RetrievePreviousParameterName(expression));
+            }
+
+            return parameter;
+        }
+
+        /// <summary>
+        /// Validates the given expression returns null. Raises an exception if it does not.
+        /// Allows a user to pass in N number of parameters as long as they are the same type.
+        /// </summary>
+        /// <param name="expressions">The functions to evaluate.</param>
+        [DebuggerHidden]
+        public static void Null(params Func<object>[] expressions)
+        {
+            NotNull(() => expressions);
+            expressions.ForEach(expression => Null<object>(expression));
+        }
+
+        #endregion
+
         #region NotNull
 
         /// <summary>

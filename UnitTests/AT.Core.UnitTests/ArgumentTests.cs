@@ -8,6 +8,59 @@ namespace AT.Core.UnitTests
     [TestClass]
     public class ArgumentTests
     {
+        #region Argument.Null
+
+        [TestMethod]
+        public void Argument_Null_NullInput_Success()
+        {
+            Func<String> expression = null;
+            Func<String> result = Argument.Null(() => expression);
+            Assert.AreEqual(null, result);
+        }
+
+        [TestMethod]
+        public void Argument_Null_NotNullInput_ArgumentException()
+        {
+            String value = "not null";
+
+            try
+            {
+                String result = Argument.Null(() => value);
+                Assert.Fail("ArgumentException was not thrown when expected");
+            }
+            catch(ArgumentException ex)
+            {
+                Assert.AreEqual("value", ex.ParamName);
+            }
+        }
+
+        [TestMethod]
+        public void Argument_Null_MultipleNullInput_Success()
+        {
+            Func<String> expression1 = null;
+            Func<Int32> expression2 = null;
+            Argument.Null(() => expression1, () => expression2);
+        }
+
+        [TestMethod]
+        public void Argument_Null_MultipleNotNullInput_ArgumentException()
+        {
+            String value1 = null;
+            Int32 value2 = 3;
+
+            try
+            {
+                Argument.Null(() => value1, () => value2);
+                Assert.Fail("ArgumentException was not thrown when expected");
+            }
+            catch (ArgumentException ex)
+            {
+                Assert.AreEqual("value2", ex.ParamName);
+            }
+        }
+
+        #endregion
+
         #region Argument.NotNull
 
         [TestMethod]
