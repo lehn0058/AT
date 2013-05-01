@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Data.Entity;
 using System.Data.Objects;
 using System.Linq;
 using System.Text;
@@ -16,9 +17,9 @@ namespace AT.Data
         /// <summary>
         /// Uses the given context and reader to map sql query results to a collection of entities of type T.
         /// </summary>
-        /// <param name="objectContext"></param>
+        /// <param name="customDbContext"></param>
         /// <param name="reader"></param>
-        public abstract void MapResults(ObjectContext objectContext, DbDataReader reader);
+        public abstract void MapResults(DbContext customDbContext, DbDataReader reader);
     }
 
     /// <summary>
@@ -43,12 +44,12 @@ namespace AT.Data
         /// <summary>
         /// Uses the given context and reader to map sql query results to a collection of entities of type T.
         /// </summary>
-        /// <param name="objectContext">The object context that is doing the result mapping.</param>
+        /// <param name="customDbContext">The context that is doing the result mapping.</param>
         /// <param name="reader">A data reader with populated results.</param>
-        public override void MapResults(ObjectContext objectContext, DbDataReader reader)
+        public override void MapResults(DbContext customDbContext, DbDataReader reader)
         {
-            Argument.NotNull(() => objectContext, () => reader);
-            _results = objectContext.Read<T>(reader);
+            Argument.NotNull(() => customDbContext, () => reader);
+            _results = customDbContext.Read<T>(reader);
         }
 
         /// <summary>

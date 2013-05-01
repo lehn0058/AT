@@ -22,12 +22,12 @@ namespace AT.Data.UnitTests
                 int horsePower = 140;
 
                 MultipleResultQuery<Person> peopleQuery = (from p in context.People
-                                                       where p.Age > age
-                                                       select p).AsMultipleResultQuery();
+                                                           where p.Age > age
+                                                           select p).AsMultipleResultQuery();
 
                 MultipleResultQuery<Car> carQuery = (from c in context.Cars
-                                                where c.HorsePower > horsePower
-                                                select c).AsMultipleResultQuery();
+                                                     where c.HorsePower > horsePower
+                                                     select c).AsMultipleResultQuery();
 
                 context.MultipleResultSet(peopleQuery, carQuery);
 
@@ -41,7 +41,6 @@ namespace AT.Data.UnitTests
                 Assert.IsNotNull(carQuery.Results.SingleOrDefault(s => s.Model.Equals("Corolla")));
             }
         }
-
 
         #region Init
 
@@ -66,14 +65,37 @@ namespace AT.Data.UnitTests
 
                 List<Car> cars = new List<Car>
                 {
-                    new Car { Id = 1, Model = "Corolla", Year = new DateTime(2009, 1, 1, 0, 0, 0), MilesPerGallon = 35, HorsePower = 158 },
-                    new Car { Id = 2, Model = "Camry", Year = new DateTime(2009, 1, 1, 0, 0, 0), MilesPerGallon = 32, HorsePower = 170 },
-                    new Car { Id = 3, Model = "Yaris", Year = new DateTime(2009, 1, 1, 0, 0, 0), MilesPerGallon = 40, HorsePower = 140 },
+                    new Car { Id = 1, Model = "Corolla", Year = new DateTime(2009, 1, 1, 0, 0, 0), MilesPerGallon = 35, HorsePower = 158, PersonId = 1 },
+                    new Car { Id = 2, Model = "Camry", Year = new DateTime(2009, 1, 1, 0, 0, 0), MilesPerGallon = 32, HorsePower = 170, PersonId = 2 },
+                    new Car { Id = 3, Model = "Yaris", Year = new DateTime(2009, 1, 1, 0, 0, 0), MilesPerGallon = 40, HorsePower = 140, PersonId = 3 },
                 };
 
                 cars.ForEach(s => context.Cars.Add(s));
 
                 context.SaveChanges();
+            }
+        }
+
+        #endregion
+
+        #region Context Mapping
+
+        [TestMethod]
+        public void DbContextExtensions_MultipleResultSetQuery_PropertyMapping()
+        {
+            using (TestModelEntities context = new TestModelEntities())
+            {
+                MultipleResultQuery<Person> peopleQuery = (from p in context.People
+                                                           select p).AsMultipleResultQuery();
+
+                MultipleResultQuery<Car> carQuery = (from c in context.Cars
+                                                     select c).AsMultipleResultQuery();
+
+                context.MultipleResultSet(peopleQuery, carQuery);
+
+                Assert.IsNotNull(carQuery.Results.Single(s => s.Id == 1).Person.FirstName.Equals("Tony"));
+                Assert.IsNotNull(carQuery.Results.Single(s => s.Id == 2).Person.FirstName.Equals("John"));
+                Assert.IsNotNull(carQuery.Results.Single(s => s.Id == 3).Person.FirstName.Equals("Jane"));
             }
         }
 

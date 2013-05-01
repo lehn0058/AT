@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Data.Entity;
 using System.Data.Objects;
 using System.Data.SqlClient;
 using System.Globalization;
@@ -97,11 +98,12 @@ namespace AT.Data
         /// <summary>
         /// Uses the given context and reader to map sql query results to a collection of entities of type T.
         /// </summary>
-        /// <param name="objectContext"></param>
+        /// <param name="customDbContext"></param>
         /// <param name="reader"></param>
-        public override void MapResults(ObjectContext objectContext, DbDataReader reader)
+        public override void MapResults(DbContext customDbContext, DbDataReader reader)
         {
-             _results = objectContext.Read<T>(reader);
+            Argument.NotNull(() => customDbContext, () => reader);
+            _results = customDbContext.Read<T>(reader);
         }
 
         /// <summary>

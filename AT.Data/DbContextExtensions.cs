@@ -10,6 +10,7 @@ using System.Data.Objects;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace AT.Data
@@ -92,7 +93,7 @@ namespace AT.Data
                     {
                         foreach (MultipleResultQuery query in queries)
                         {
-                            query.MapResults(objectContext, reader);
+                            query.MapResults(db, reader);
                         }
                     }
                 }
@@ -101,6 +102,55 @@ namespace AT.Data
             {
                 storeConnection.Close();
             }
+        }
+
+        /// <summary>
+        /// Maps the results at the current location in the reader to a collection of type T. These results are mapped (appended)
+        /// to the DbContext if possible.
+        /// </summary>
+        /// <typeparam name="T">The expected return type.</typeparam>
+        /// <param name="customDbContext">The context doing the mapping.</param>
+        /// <param name="reader">A populated reader with query results.</param>
+        /// <returns>A collection of mapped entities.</returns>
+        public static IEnumerable<T> Read<T>(this DbContext customDbContext, DbDataReader reader)
+        {
+            Argument.NotNull(() => customDbContext, () => reader);
+
+            ObjectContext objectContext = ((IObjectContextAdapter)customDbContext).ObjectContext;
+            Type currentType = customDbContext.GetType();
+            Type resultType = typeof(T);
+            PropertyInfo[] propertyInfos = currentType.GetProperties();
+            Boolean found = false;
+            List<T> results = new List<T>();
+
+            // Look for a property that has the same return type as the one being translated.
+            // There should be only one, as there can't be multiple entities in the edmx that have the same type.
+            foreach (PropertyInfo info in propertyInfos)
+            {
+                Type type = info.PropertyType;
+                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(DbSet<>))
+                {
+                    Type propertyType = type.GetGenericArguments()[0]; // use this...
+
+                    // Check if the current property is the same type as the expected result type.
+                    if (propertyType == resultType)
+                    {
+                        results = objectContext.Translate<T>(reader, info.Name, MergeOption.AppendOnly).ToList();
+                        reader.NextResult();
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
+            // If we could not find any entities on the objectContext, still map them. These results will obviously not be available in the objectContext.
+            if (!found)
+            {
+                results = objectContext.Translate<T>(reader).ToList();
+                reader.NextResult();
+            }
+
+            return results;
         }
     }
 }
