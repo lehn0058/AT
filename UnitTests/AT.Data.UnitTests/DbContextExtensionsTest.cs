@@ -42,6 +42,78 @@ namespace AT.Data.UnitTests
             }
         }
 
+        [TestMethod]
+        public void ManyParameters()
+        {
+            int age = 17;
+            int horsePower = 140;
+            int id = 0;
+            int iq = 10;
+
+            using (TestModelEntities context = new TestModelEntities())
+            {
+                MultipleResultQuery<Person> peopleQuery1 = (from p in context.People
+                                                            join c in context.Cars on p.Id equals c.PersonId
+                                                            where
+                                                                p.Age > age
+                                                                && p.Id > id
+                                                                && p.IQ > iq
+                                                            select p).AsMultipleResultQuery();
+
+                MultipleResultQuery<Car> carQuery1 = (from c in context.Cars
+                                                      join p in context.People on c.PersonId equals p.Id
+                                                      where 
+                                                        c.HorsePower > horsePower
+                                                        && p.Id > id
+                                                        && p.IQ > iq
+                                                      select c).AsMultipleResultQuery();
+
+                MultipleResultQuery<Person> peopleQuery2 = (from p in context.People
+                                                            join c in context.Cars on p.Id equals c.PersonId
+                                                            where p.Age > age
+                                                                && p.Id > id
+                                                                && p.IQ > iq
+                                                            select p).AsMultipleResultQuery();
+
+                MultipleResultQuery<Car> carQuery2 = (from c in context.Cars
+                                                      join p in context.People on c.PersonId equals p.Id
+                                                      where c.HorsePower > horsePower
+                                                                && p.Id > id
+                                                                && p.IQ > iq
+                                                      select c).AsMultipleResultQuery();
+
+                MultipleResultQuery<Person> peopleQuery3 = (from p in context.People
+                                                            join c in context.Cars on p.Id equals c.PersonId
+                                                            where p.Age > age
+                                                                && p.Id > id
+                                                                && p.IQ > iq
+                                                            select p).AsMultipleResultQuery();
+
+                MultipleResultQuery<Car> carQuery3 = (from c in context.Cars
+                                                      join p in context.People on c.PersonId equals p.Id
+                                                      where c.HorsePower > horsePower
+                                                                && p.Id > id
+                                                                && p.IQ > iq
+                                                      select c).AsMultipleResultQuery();
+
+                MultipleResultQuery<Person> peopleQuery4 = (from p in context.People
+                                                            join c in context.Cars on p.Id equals c.PersonId
+                                                            where p.Age > age
+                                                                && p.Id > id
+                                                                && p.IQ > iq
+                                                            select p).AsMultipleResultQuery();
+
+                MultipleResultQuery<Car> carQuery4 = (from c in context.Cars
+                                                      join p in context.People on c.PersonId equals p.Id
+                                                      where c.HorsePower > horsePower
+                                                                && p.Id > id
+                                                                && p.IQ > iq
+                                                      select c).AsMultipleResultQuery();
+
+                context.MultipleResultSet(peopleQuery1, carQuery1, peopleQuery2, carQuery2, peopleQuery3, carQuery3, peopleQuery4, carQuery4);
+            }
+        }
+
         #region Init
 
         [ClassInitialize()]

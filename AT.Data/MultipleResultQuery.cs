@@ -17,7 +17,8 @@ namespace AT.Data
     /// </summary>
     public abstract class MultipleResultQuery : MultipleResult
     {
-        private const String parameterFormat = "@p__linq__{0}";
+        private const String linqParameterFormat = "@p__linq__{0}";
+        private const String customParameterFormat = "@p__linq__m__{0}";
         private IQueryable _query;
         private ParameterExtractorExpressionVisitor _visitor = new ParameterExtractorExpressionVisitor();
 
@@ -50,8 +51,8 @@ namespace AT.Data
             int currentParameterIndex = parameterIndexStart;
             for (int i = 0; i < _visitor.ExtractedParametersForQuery(_query).Count; i++)
             {
-                String parameterString = String.Format(CultureInfo.InvariantCulture, parameterFormat, i);
-                String newParameterString = String.Format(CultureInfo.InvariantCulture, parameterFormat, currentParameterIndex);
+                String parameterString = String.Format(CultureInfo.InvariantCulture, linqParameterFormat, i);
+                String newParameterString = String.Format(CultureInfo.InvariantCulture, customParameterFormat, currentParameterIndex);
                 formatedQuery = formatedQuery.Replace(parameterString, newParameterString);
                 currentParameterIndex++;
             }
@@ -69,7 +70,7 @@ namespace AT.Data
         {
             foreach (object parameter in _visitor.ExtractedParametersForQuery(_query))
             {
-                String parameterName = String.Format(CultureInfo.InvariantCulture, parameterFormat, parameterIndex);
+                String parameterName = String.Format(CultureInfo.InvariantCulture, customParameterFormat, parameterIndex);
                 sqlParameters.Add(new SqlParameter(parameterName, parameter));
                 parameterIndex++;
             }
