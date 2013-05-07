@@ -43,7 +43,7 @@ namespace AT.Data.UnitTests
         }
 
         [TestMethod]
-        public void ManyParameters()
+        public void DbContextExtensions_MultipleResultSetQuery_ManyParameters_DoesNotThrowException()
         {
             int age = 17;
             int horsePower = 140;
