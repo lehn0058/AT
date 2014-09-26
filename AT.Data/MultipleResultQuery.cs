@@ -1,4 +1,4 @@
-﻿using AT.Core;
+using AT.Core;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -7,6 +7,7 @@ using System.Data.Objects;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,7 +21,7 @@ namespace AT.Data
         private const String linqParameterFormat = "@p__linq__{0}";
         private const String customParameterFormat = "@p__linq__m__{0}";
         private IQueryable _query;
-        private ParameterExtractorExpressionVisitor _visitor = new ParameterExtractorExpressionVisitor();
+        private Dictionary<string, object> _parameters = new Dictionary<string,object>();
 
         /// <summary>
         /// The query that is wrapped by this entity.
@@ -31,13 +32,6 @@ namespace AT.Data
             set { _query = value; }
         }
         
-        /// <summary>
-        /// Expression visitor capable of extracting parameters from an IQueryable.
-        /// </summary>
-        protected ParameterExtractorExpressionVisitor Visitor
-        {
-            get { return _visitor; }
-        }
 
         /// <summary>
         /// Retrieves the SQL query the wrapped IQueryable represents. Adjusts the parameter names based on the index passed in.
@@ -47,13 +41,25 @@ namespace AT.Data
         /// <returns>A query with adjusted indexes produced by the wrapped IQueryable.</returns>
         internal String RetrieveSqlQuery(int parameterIndexStart)
         {
-            string formatedQuery = _query.ToString();
+            _parameters.Clear();
+
+            FieldInfo fi =_query.GetType().GetField("_internalQuery", BindingFlags.NonPublic | BindingFlags.Instance);
+            object q2 = fi.GetValue(_query);
+
+            PropertyInfo pi = q2.GetType().GetProperty("ObjectQuery", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+            //get query
+            ObjectQuery objectQuery = (ObjectQuery)pi.GetValue(q2);
+            string formatedQuery = objectQuery.ToTraceString();
+
+
             int currentParameterIndex = parameterIndexStart;
-            for (int i = 0; i < _visitor.ExtractedParametersForQuery(_query).Count; i++)
+            for (int i = 0; i < objectQuery.Parameters.Count; i++)
             {
                 String parameterString = String.Format(CultureInfo.InvariantCulture, linqParameterFormat, i);
                 String newParameterString = String.Format(CultureInfo.InvariantCulture, customParameterFormat, currentParameterIndex);
                 formatedQuery = formatedQuery.Replace(parameterString, newParameterString);
+                _parameters[newParameterString] = objectQuery.Parameters[parameterString.Substring(1)].Value;
                 currentParameterIndex++;
             }
 
@@ -68,10 +74,9 @@ namespace AT.Data
         /// <returns>The new parameter index we left off at.</returns>
         internal int BuildParameters(int parameterIndex, List<SqlParameter> sqlParameters)
         {
-            foreach (object parameter in _visitor.ExtractedParametersForQuery(_query))
+            foreach (KeyValuePair<string,object> parameter in _parameters)
             {
-                String parameterName = String.Format(CultureInfo.InvariantCulture, customParameterFormat, parameterIndex);
-                sqlParameters.Add(new SqlParameter(parameterName, parameter));
+                sqlParameters.Add(new SqlParameter(parameter.Key, parameter.Value));
                 parameterIndex++;
             }
             return parameterIndex;
@@ -93,7 +98,6 @@ namespace AT.Data
         public MultipleResultQuery(IQueryable<T> query)
         {
             Query = Argument.NotNull(() => query);
-            Visitor.Visit(Query);
         }
 
         /// <summary>
