@@ -1,14 +1,13 @@
-﻿using AT.Core;
+﻿using System.Data.Entity.Core.EntityClient;
+using System.Data.Entity.Core.Objects;
+using AT.Core;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
-using System.Data.EntityClient;
-using System.Data.Objects;
 using System.Data.SqlClient;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;

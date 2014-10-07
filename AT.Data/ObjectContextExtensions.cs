@@ -1,9 +1,9 @@
-﻿using AT.Core;
+﻿using System.Data.Entity.Core.Objects;
+using System.Linq;
+using AT.Core;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
-using System.Data.Objects;
-using System.Linq;
 
 namespace AT.Data
 {

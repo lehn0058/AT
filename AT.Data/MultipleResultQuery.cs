@@ -1,16 +1,13 @@
+using System.Data.Entity.Core.Objects;
 using AT.Core;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.Entity;
-using System.Data.Objects;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace AT.Data
 {
     /// <summary>
@@ -21,7 +18,17 @@ namespace AT.Data
         private const String linqParameterFormat = "@p__linq__{0}";
         private const String customParameterFormat = "@p__linq__m__{0}";
         private IQueryable _query;
-        private Dictionary<string, object> _parameters = new Dictionary<string,object>();
+        private readonly Dictionary<string, object> _parameters = new Dictionary<string, object>();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected ObjectQuery ObjectQuery;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected MultipleResultMapper Mapper = new MultipleResultMapper();
 
         /// <summary>
         /// The query that is wrapped by this entity.
@@ -31,7 +38,6 @@ namespace AT.Data
             get { return _query; }
             set { _query = value; }
         }
-        
 
         /// <summary>
         /// Retrieves the SQL query the wrapped IQueryable represents. Adjusts the parameter names based on the index passed in.
@@ -43,23 +49,23 @@ namespace AT.Data
         {
             _parameters.Clear();
 
-            FieldInfo fi =_query.GetType().GetField("_internalQuery", BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo fi = _query.GetType().GetField("_internalQuery", BindingFlags.NonPublic | BindingFlags.Instance);
             object q2 = fi.GetValue(_query);
 
             PropertyInfo pi = q2.GetType().GetProperty("ObjectQuery", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
             //get query
-            ObjectQuery objectQuery = (ObjectQuery)pi.GetValue(q2);
-            string formatedQuery = objectQuery.ToTraceString();
+            ObjectQuery = (ObjectQuery)pi.GetValue(q2, null);
+            string formatedQuery = ObjectQuery.ToTraceString();
 
 
             int currentParameterIndex = parameterIndexStart;
-            for (int i = 0; i < objectQuery.Parameters.Count; i++)
+            for (int i = 0; i < ObjectQuery.Parameters.Count; i++)
             {
                 String parameterString = String.Format(CultureInfo.InvariantCulture, linqParameterFormat, i);
                 String newParameterString = String.Format(CultureInfo.InvariantCulture, customParameterFormat, currentParameterIndex);
                 formatedQuery = formatedQuery.Replace(parameterString, newParameterString);
-                _parameters[newParameterString] = objectQuery.Parameters[parameterString.Substring(1)].Value;
+                _parameters[newParameterString] = ObjectQuery.Parameters[parameterString.Substring(1)].Value;
                 currentParameterIndex++;
             }
 
@@ -74,7 +80,7 @@ namespace AT.Data
         /// <returns>The new parameter index we left off at.</returns>
         internal int BuildParameters(int parameterIndex, List<SqlParameter> sqlParameters)
         {
-            foreach (KeyValuePair<string,object> parameter in _parameters)
+            foreach (KeyValuePair<string, object> parameter in _parameters)
             {
                 sqlParameters.Add(new SqlParameter(parameter.Key, parameter.Value));
                 parameterIndex++;
@@ -108,7 +114,9 @@ namespace AT.Data
         public override void MapResults(DbContext customDbContext, DbDataReader reader)
         {
             Argument.NotNull(() => customDbContext, () => reader);
-            _results = customDbContext.Read<T>(reader);
+
+            DbDataReader reader2 = Mapper.WrapDataReader(ObjectQuery, reader);
+            _results = customDbContext.Read<T>(reader2);
         }
 
         /// <summary>
