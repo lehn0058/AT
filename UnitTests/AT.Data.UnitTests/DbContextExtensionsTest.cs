@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Data.Entity;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Data.Objects;
 using AT.Data;
 
 namespace AT.Data.UnitTests

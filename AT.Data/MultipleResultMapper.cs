@@ -22,66 +22,32 @@ namespace AT.Data
         public IEnumerable<KeyValuePair<string, int>> GetPropertyPositions(ObjectQuery query)
         {
             // get private ObjectQueryState ObjectQuery._state; 
-            // of actual type internal class 
-            //      System.Data.Objects.ELinq.ELinqQueryState 
-
+            // of actual type internal class
             Object queryState = GetProperty(query, "QueryState");
-            AssertNonNullAndOfType(queryState, "System.Data.Objects.ELinq.ELinqQueryState");
 
             // get protected ObjectQueryExecutionPlan ObjectQueryState._cachedPlan; 
             // of actual type internal sealed class 
-            //      System.Data.Objects.Internal.ObjectQueryExecutionPlan 
             Object plan = GetField(queryState, "_cachedPlan");
-            AssertNonNullAndOfType(plan, "System.Data.Objects.Internal.ObjectQueryExecutionPlan");
 
             // get internal readonly DbCommandDefinition ObjectQueryExecutionPlan.CommandDefinition; 
-            // of actual type internal sealed class 
-            //      System.Data.EntityClient.EntityCommandDefinition 
+            // of actual type internal sealed class
             Object commandDefinition = GetField(plan, "CommandDefinition");
-            AssertNonNullAndOfType(commandDefinition, "System.Data.EntityClient.EntityCommandDefinition");
 
             // get private readonly IColumnMapGenerator EntityCommandDefinition._columnMapGenerator; 
             // of actual type private sealed class 
-            //      System.Data.EntityClient.EntityCommandDefinition.ConstantColumnMapGenerator 
-            Object columnMapGenerator = GetField(commandDefinition, "_columnMapGenerator", false);
-            Object columnMap;
-            if (columnMapGenerator != null) // EF 4.x
-            {
-                AssertNonNullAndOfType(columnMapGenerator, "System.Data.EntityClient.EntityCommandDefinition+ConstantColumnMapGenerator");
+            Object columnMapGenerator = GetField(commandDefinition, "_columnMapGenerators");
 
-                // get private readonly ColumnMap ConstantColumnMapGenerator._columnMap; 
-                // of actual type internal class 
-                //      System.Data.Query.InternalTrees.SimpleCollectionColumnMap 
-                columnMap = GetField(columnMapGenerator, "_columnMap");
-                AssertNonNullAndOfType(columnMap, "System.Data.Query.InternalTrees.SimpleCollectionColumnMap");
-
-            }
-            else // EF 5.x
-            {
-                // get private readonly IColumnMapGenerator EntityCommandDefinition._columnMapGenerator; 
-                // of actual type private sealed class 
-                //      System.Data.EntityClient.EntityCommandDefinition.ConstantColumnMapGenerator 
-                columnMapGenerator = GetField(commandDefinition, "_columnMapGenerators");
-                AssertNonNullAndOfType(columnMapGenerator, "System.Data.EntityClient.EntityCommandDefinition+IColumnMapGenerator[]");
-
-                // get private readonly ColumnMap ConstantColumnMapGenerator._columnMap; 
-                // of actual type internal class 
-                //      System.Data.Query.InternalTrees.SimpleCollectionColumnMap 
-                columnMap = GetField(((object[])columnMapGenerator)[0], "_columnMap");
-                AssertNonNullAndOfType(columnMap, "System.Data.Query.InternalTrees.SimpleCollectionColumnMap");
-            }
+            // get private readonly ColumnMap ConstantColumnMapGenerator._columnMap; 
+            // of actual type internal class
+            Object columnMap = GetField(((object[])columnMapGenerator)[0], "_columnMap");
 
             // get internal ColumnMap CollectionColumnMap.Element; 
-            // of actual type internal class 
-            //      System.Data.Query.InternalTrees.RecordColumnMap 
+            // of actual type internal class
             Object columnMapElement = GetProperty(columnMap, "Element");
-            //AssertNonNullAndOfType(columnMapElement, "System.Data.Query.InternalTrees.RecordColumnMap");
 
             // get internal ColumnMap[] StructuredColumnMap.Properties; 
-            // array of internal abstract class 
-            //      System.Data.Query.InternalTrees.ColumnMap 
+            // array of internal abstract class
             Array columnMapProperties = GetProperty(columnMapElement, "Properties") as Array;
-            //AssertNonNullAndOfType(columnMapProperties, "System.Data.Query.InternalTrees.ColumnMap[]");
 
             Int32 n = columnMapProperties.Length;
 
@@ -89,21 +55,14 @@ namespace AT.Data
 
             for (Int32 i = 0; i < n; ++i)
             {
-                // get value at index i in array 
-                // of actual type internal class 
-                //      System.Data.Query.InternalTrees.ScalarColumnMap 
+                // get value at index i in array of actual type internal class 
                 Object column = columnMapProperties.GetValue(i);
-                AssertNonNullAndOfType(column, "System.Data.Query.InternalTrees.ScalarColumnMap");
-
                 string colName = (string)GetProperty(column, "Name");
-
 
                 // get internal int ScalarColumnMap.ColumnPos; 
                 Object columnPositionOfAProperty = GetProperty(column, "ColumnPos");
-                AssertNonNullAndOfType(columnPositionOfAProperty, "System.Int32");
 
                 propertyPositions[i] = new KeyValuePair<string, int>(colName, (int)columnPositionOfAProperty);
-
             }
 
             return propertyPositions;
@@ -119,7 +78,6 @@ namespace AT.Data
         {
             IEnumerable<KeyValuePair<string, int>> propertyPositions = GetPropertyPositions(query);
             propertyPositions.ForEach(kvp => _mapColumnNameToColumnPosition.Add(kvp.Key, kvp.Value));
-
             return new MappedDataReader(this, readerIn);
         }
 
@@ -164,18 +122,9 @@ namespace AT.Data
 
         }
 
-        private static void AssertNonNullAndOfType(object obj, string fullName)
-        {
-            if (obj == null) throw EFChangedException();
-            string typeFullName = obj.GetType().FullName;
-            if (typeFullName != fullName) throw EFChangedException();
-
-        }
-
         private static InvalidOperationException EFChangedException()
         {
             return new InvalidOperationException("Entity Framework internals has changed, please review and fix reflection code");
-
         }
     }
 }
